@@ -4,6 +4,7 @@ package com.webpa.webpa.web;
 import com.webpa.webpa.Card;
 import com.webpa.webpa.Category;
 import com.webpa.webpa.Partner;
+import com.webpa.webpa.Seller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,8 +22,8 @@ public class CardController {
     // Конструктор для создания заранее определенных карточек
     public CardController() {
         // Пример создания карточек
-        cards.add(new Card(1L, new Date(), "Card 1", "Description 1", new Category(1, "Category 1"), true, "USA", new Date(), new Partner(1, "Partner 1"), "Red", "Articul 1", "http://example.com/image1.jpg"));
-        cards.add(new Card(2L, new Date(), "Card 2", "Description 2", new Category(2, "Category 2"), true, "Canada", new Date(), new Partner(2, "Partner 2"), "Blue", "Articul 2", "http://example.com/image2.jpg"));
+        cards.add(new Card(1L, new Date(), "Card 1", "Description 1", new Category(1, "Category 1"), true, "USA", new Date(), new Partner(1, "Partner 1"), "Red", "Articul 1", "http://example.com/image1.jpg", new Seller("daun1")));
+        cards.add(new Card(2L, new Date(), "Card 2", "Description 2", new Category(2, "Category 2"), true, "Canada", new Date(), new Partner(2, "Partner 2"), "Blue", "Articul 2", "http://example.com/image2.jpg", new Seller("daun2")));
         // Добавьте больше карточек по необходимости
     }
 
@@ -33,6 +34,11 @@ public class CardController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Card> getCardById(@PathVariable Long id) {
+        //делаем запрос на парсер
+
+
+
+        //ответ от парсера - json с картами
         return cards.stream()
                 .filter(card -> card.getId().equals(id))
                 .findFirst()

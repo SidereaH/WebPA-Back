@@ -17,8 +17,9 @@ public class Card implements Serializable{
     private String color;
     private String articul;
     private String img_url;
+    private Seller seller;
 
-    public Card(Long id, Date placedAt, String name, String description, Category category, boolean isAvaible, String originCounrty, Date warranty, Partner partner, String color, String articul, String img_url) {
+    public Card(Long id, Date placedAt, String name, String description, Category category, boolean isAvaible, String originCounrty, Date warranty, Partner partner, String color, String articul, String img_url, Seller seller) {
         this.id = id;
         this.placedAt = placedAt;
         this.name = name;
@@ -31,6 +32,7 @@ public class Card implements Serializable{
         this.color = color;
         this.articul = articul;
         this.img_url = img_url;
+        this.seller = seller;
     }
 
 }
