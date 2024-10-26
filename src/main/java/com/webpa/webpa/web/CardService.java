@@ -1,6 +1,6 @@
 package com.webpa.webpa.web;
 
-import com.webpa.webpa.Card;
+import com.webpa.webpa.ProductCard;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -10,22 +10,22 @@ import java.util.Optional;
 @Service
 public class CardService {
 
-    private List<Card> cards = new ArrayList<>(); // Пример хранилища
+    private List<ProductCard> cards = new ArrayList<>(); // Пример хранилища
 
-    public List<Card> findAll() {
+    public List<ProductCard> findAll() {
         return cards;
     }
 
-    public Optional<Card> findById(Long id) {
+    public Optional<ProductCard> findById(Long id) {
         return cards.stream().filter(card -> card.getId().equals(id)).findFirst();
     }
 
-    public Card save(Card card) {
+    public ProductCard save(ProductCard card) {
         cards.add(card);
         return card;
     }
 
-    public Card update(Card card) {
+    public ProductCard update(ProductCard card) {
         delete(card.getId());
         cards.add(card);
         return card;
