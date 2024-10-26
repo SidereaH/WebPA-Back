@@ -24,8 +24,8 @@ public class ProductCard implements Serializable {
     @Column(nullable = false)
     private String name;
 
+    @NotBlank(message = "Product name is required")
     @Positive
-    @Column(nullable = false)
     private Integer price;
 
     @Column(name = "img_url")
@@ -45,4 +45,10 @@ public class ProductCard implements Serializable {
 
     @Column(columnDefinition = "TEXT")
     private String description;
+    
+    @Column(columnDefinition = "TEXT")
+    private String marketplace;
+    @Column(columnDefinition = "TEXT")
+    private String url;
+
 }

@@ -20,7 +20,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
-
+import com.webpa.webpa.parse.*;
 @RestController
 @RequestMapping("/api/products")
 @Slf4j
@@ -28,10 +28,32 @@ import org.springframework.web.bind.annotation.*;
 public class ProductCardController {
 
     private final ProductCardService productCardService;
+    private final MarketplaceParserFactory parserFactory;
 
     @Autowired
-    public ProductCardController(ProductCardService productCardService) {
+    public ProductCardController(ProductCardService productCardService, MarketplaceParserFactory parserFactory) {
         this.productCardService = productCardService;
+        this.parserFactory = parserFactory;
+    }
+
+    @GetMapping("/fetchAll")
+    @Operation(summary = "Получить информацию о товарах с всех маркетплейсов", description = "Парсит и сохраняет данные о товарах с OZON, Wildberries и YandexMarket по названию товара")
+    public ResponseEntity<List<ProductCard>> fetchFromAllMarketplaces(
+            @Parameter(description = "Название товара для поиска", required = true) @RequestParam String productName) {
+        List<ProductCard> allProducts = new ArrayList<>();
+
+        try {
+            List<MarketplaceParser> parsers = parserFactory.getAllParsers();
+            for (MarketplaceParser parser : parsers) {
+                List<ProductCard> products = parser.parseProducts(productName);
+                products.forEach(productCardService::save);
+                allProducts.addAll(products);
+            }
+            return new ResponseEntity<>(allProducts, HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("Error fetching products from all marketplaces: ", e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
     // Create new product
     @PostMapping
