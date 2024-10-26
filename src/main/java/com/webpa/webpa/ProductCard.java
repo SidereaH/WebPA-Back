@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,8 +14,7 @@ import java.util.Map;
 @Table(name = "product_card")
 @Data
 public class ProductCard implements Serializable {
-    private static final ObjectMapper objectMapper = new ObjectMapper();
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -33,50 +32,17 @@ public class ProductCard implements Serializable {
     private String image;
 
     @Column(name = "main_info", columnDefinition = "TEXT")
-    private String mainInfoJson;
+    @Convert(converter = JsonConverter.class)
+    private Map<String, Object> mainInfo = new HashMap<>();
 
     @Column(name = "main_characteristics", columnDefinition = "TEXT")
-    private String mainCharacteristicsJson;
+    @Convert(converter = JsonConverter.class)
+    private Map<String, Object> mainCharacteristics = new HashMap<>();
 
     @Column(name = "additional_information", columnDefinition = "TEXT")
-    private String additionalInformationJson;
+    @Convert(converter = JsonConverter.class)
+    private Map<String, Object> additionalInformation = new HashMap<>();
 
     @Column(columnDefinition = "TEXT")
     private String description;
-
-    @Transient
-    private Map<String, Object> mainInfo = new HashMap<>();
-
-    @Transient
-    private Map<String, Object> mainCharacteristics = new HashMap<>();
-
-    @Transient
-    private Map<String, Object> additionalInformation = new HashMap<>();
-
-    @PrePersist
-    @PreUpdate
-    private void beforeSave() throws Exception {
-        if (mainInfo != null) {
-            mainInfoJson = objectMapper.writeValueAsString(mainInfo);
-        }
-        if (mainCharacteristics != null) {
-            mainCharacteristicsJson = objectMapper.writeValueAsString(mainCharacteristics);
-        }
-        if (additionalInformation != null) {
-            additionalInformationJson = objectMapper.writeValueAsString(additionalInformation);
-        }
-    }
-
-    @PostLoad
-    private void afterLoad() throws Exception {
-        if (mainInfoJson != null) {
-            mainInfo = objectMapper.readValue(mainInfoJson, Map.class);
-        }
-        if (mainCharacteristicsJson != null) {
-            mainCharacteristics = objectMapper.readValue(mainCharacteristicsJson, Map.class);
-        }
-        if (additionalInformationJson != null) {
-            additionalInformation = objectMapper.readValue(additionalInformationJson, Map.class);
-        }
-    }
 }
