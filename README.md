@@ -11,6 +11,8 @@ cd ..
 
 cd WebPA-Back
 
+git checkout reworkerproj
+
 docker build -t priceguru-backend .
 
 cd ..
