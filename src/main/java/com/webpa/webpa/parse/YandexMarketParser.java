@@ -29,7 +29,7 @@ public class YandexMarketParser implements MarketplaceParser {
 
                 ProductCard product = new ProductCard();
                 product.setName(title);
-                product.setPrice(Integer.parseInt(price));
+                //product.setPrice(g(price));
                 product.setMarketplace("YandexMarket");
                 product.setUrl("https://market.yandex.ru" + productUrl);
 

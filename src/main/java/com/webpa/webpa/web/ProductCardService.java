@@ -14,4 +14,5 @@ public interface ProductCardService {
     boolean existsById(Long id);
     List<ProductCard> findByNameContainingAndPriceBetween(String name, double minPrice, double maxPrice);
     List<ProductCard> findByPriceRangeAndMarketplace(double minPrice, double maxPrice, String marketplace);
+    List<ProductCard> saveAll(List<ProductCard> product);
 }

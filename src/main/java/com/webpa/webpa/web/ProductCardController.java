@@ -35,6 +35,26 @@ public class ProductCardController {
         this.excelExportService = excelExportService;
     }
 
+    @PostMapping
+    @Operation(summary = "Save product with Excel", description = "Saves product and generates Excel file")
+    public ResponseEntity<ProductCard> saveProduct(@RequestBody @Valid ProductCard product) {
+        try {
+            // Generate Excel file for single product
+            byte[] excelFile = excelExportService.exportToExcel(List.of(product));
+            
+            // Set Excel file data to product
+            product.setExcelFile(excelFile);
+            product.setExcelFilename("product_" + System.currentTimeMillis() + ".xlsx");
+            
+            // Save product with Excel file
+            ProductCard savedProduct = productCardService.save(product);
+            return ResponseEntity.ok(savedProduct);
+        } catch (Exception e) {
+            log.error("Error saving product: ", e);
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
     @GetMapping("/fetchAll")
     @Operation(summary = "Fetch all products", description = "Returns all products from database")
     public ResponseEntity<List<ProductCard>> getAllProducts() {
@@ -48,61 +68,22 @@ public class ProductCardController {
         }
     }
 
-    @GetMapping("/export/excel")
-    @Operation(summary = "Export to Excel", description = "Export all products to Excel file")
-    public ResponseEntity<byte[]> exportToExcel() {
+    @GetMapping("/excel/{id}")
+    @Operation(summary = "Get Excel file", description = "Download Excel file for specific product")
+    public ResponseEntity<byte[]> getExcelFile(@PathVariable Long id) {
         try {
-            List<ProductCard> products = productCardService.findAll(PageRequest.of(0, Integer.MAX_VALUE))
-                    .getContent();
-            byte[] excelFile = excelExportService.exportToExcel(products);
-
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-            headers.setContentDispositionFormData("attachment", "products.xlsx");
-
-            return new ResponseEntity<>(excelFile, headers, HttpStatus.OK);
+            Optional<ProductCard> productOpt = productCardService.findById(id);
+            if (productOpt.isPresent()) {
+                ProductCard product = productOpt.get();
+                HttpHeaders headers = new HttpHeaders();
+                headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+                headers.setContentDispositionFormData("attachment", product.getExcelFilename());
+                return new ResponseEntity<>(product.getExcelFile(), headers, HttpStatus.OK);
+            }
+            return ResponseEntity.notFound().build();
         } catch (Exception e) {
-            log.error("Error exporting to Excel: ", e);
+            log.error("Error fetching Excel file: ", e);
             return ResponseEntity.internalServerError().build();
         }
     }
-
-    @GetMapping("/sort")
-    @Operation(summary = "Get sorted products", description = "Returns products sorted by specified field")
-    public ResponseEntity<Page<ProductCard>> getSortedProducts(
-            @Parameter(description = "Page number") @RequestParam(defaultValue = "0") int page,
-            @Parameter(description = "Products per page") @RequestParam(defaultValue = "10") int size,
-            @Parameter(description = "Sort field") @RequestParam(defaultValue = "id") String sortBy,
-            @Parameter(description = "Sort direction") @RequestParam(defaultValue = "ASC") String direction) {
-        try {
-            Sort.Direction sortDirection = Sort.Direction.fromString(direction.toUpperCase());
-            Page<ProductCard> products = productCardService.findAll(
-                    PageRequest.of(page, size, Sort.by(sortDirection, sortBy)));
-            return ResponseEntity.ok(products);
-        } catch (Exception e) {
-            log.error("Error fetching sorted products: ", e);
-            return ResponseEntity.internalServerError().build();
-        }
-    }
-
-    @GetMapping("/filter")
-    @Operation(summary = "Filter products", description = "Filter products by price range and marketplace")
-    public ResponseEntity<List<ProductCard>> filterProducts(
-            @Parameter(description = "Minimum price") @RequestParam(required = false) Double minPrice,
-            @Parameter(description = "Maximum price") @RequestParam(required = false) Double maxPrice,
-            @Parameter(description = "Marketplace") @RequestParam(required = false) String marketplace) {
-        try {
-            minPrice = minPrice != null ? minPrice : 0.0;
-            maxPrice = maxPrice != null ? maxPrice : Double.MAX_VALUE;
-            
-            List<ProductCard> products = productCardService.findByPriceRangeAndMarketplace(
-                    minPrice, maxPrice, marketplace);
-            return ResponseEntity.ok(products);
-        } catch (Exception e) {
-            log.error("Error filtering products: ", e);
-            return ResponseEntity.internalServerError().build();
-        }
-    }
-
-    // Остальные существующие методы остаются без изменений
 }

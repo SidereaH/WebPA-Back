@@ -8,13 +8,15 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.Map;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import java.util.*;
 
 @Entity
 @Table(name = "product_card")
 @Data
 public class ProductCard implements Serializable {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,7 +27,8 @@ public class ProductCard implements Serializable {
     private String name;
 
     @Positive
-    private Integer price;
+    @Column(nullable = false)
+    private Double price;
 
     @Column(name = "img_url")
     private String image;
@@ -45,9 +48,41 @@ public class ProductCard implements Serializable {
     @Column(columnDefinition = "TEXT")
     private String description;
     
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "VARCHAR(50)")
     private String marketplace;
+
     @Column(columnDefinition = "TEXT")
     private String url;
 
+    @Lob
+    @Column(name = "excel_file", columnDefinition = "MEDIUMBLOB")
+    private byte[] excelFile;
+
+    @Column(name = "excel_filename")
+    private String excelFilename;
+
+    @Column(name = "created_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdAt;
+
+    @Column(name = "updated_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date updatedAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = new Date();
+        updatedAt = new Date();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = new Date();
+    }
+
+    // Exclude excel file from JSON serialization
+    @JsonIgnore
+    public byte[] getExcelFile() {
+        return excelFile;
+    }
 }

@@ -41,7 +41,7 @@ public class OzonParser implements MarketplaceParser {
 
                 ProductCard product = new ProductCard();
                 product.setName(title);
-                product.setPrice(Integer.parseInt(price));
+                //product.setPrice(getDoubleValue(price));
                 product.setMarketplace("OZON");
                 product.setUrl("https://www.ozon.ru" + productUrl);
 

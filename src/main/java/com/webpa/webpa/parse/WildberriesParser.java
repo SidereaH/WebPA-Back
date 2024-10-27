@@ -27,6 +27,7 @@ import com.webpa.webpa.*;
 import java.util.*;
 import org.json.CDL;
 
+
 @Component
 public class WildberriesParser implements MarketplaceParser {
 
@@ -69,7 +70,8 @@ public class WildberriesParser implements MarketplaceParser {
 
                     // Set basic fields
                     productCard.setName(getStringValue(product, "name"));
-                    productCard.setPrice(getIntValue(product, "salePriceU") / 100); // Convert kopeks to rubles
+                    System.out.println((getDoubleValue(dataObject, "salePriceU")));
+                    productCard.setPrice(getDoubleValue(product, "salePriceU") / 100); // Convert kopeks to rubles
                     productCard.setImage(getStringValue(product, "pics"));
                     productCard.setUrl(
                             "https://www.wildberries.ru/catalog/" + getStringValue(product, "id") + "/detail.aspx");
@@ -118,15 +120,15 @@ public class WildberriesParser implements MarketplaceParser {
     }
 
     // Helper methods to safely get values from JsonObject
-    private String getStringValue(JsonObject obj, String key) {
+    protected String getStringValue(JsonObject obj, String key) {
         return obj.has(key) ? obj.get(key).getAsString() : "";
     }
 
-    private int getIntValue(JsonObject obj, String key) {
+    protected int getIntValue(JsonObject obj, String key) {
         return obj.has(key) ? obj.get(key).getAsInt() : 0;
     }
 
-    private double getDoubleValue(JsonObject obj, String key) {
+    protected double getDoubleValue(JsonObject obj, String key) {
         return obj.has(key) ? obj.get(key).getAsDouble() : 0.0;
     }
 
