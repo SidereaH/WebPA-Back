@@ -53,4 +53,11 @@ public class ProductCardServiceImpl implements ProductCardService {
         return productCardRepository
                 .findByNameContainingIgnoreCaseAndPriceBetween(name, minPrice, maxPrice);
     }
+    @Override
+    public List<ProductCard> findByPriceRangeAndMarketplace(double minPrice, double maxPrice, String marketplace) {
+        if (marketplace != null && !marketplace.isEmpty()) {
+            return productCardRepository.findByPriceBetweenAndMarketplaceIgnoreCase(minPrice, maxPrice, marketplace);
+        }
+        return productCardRepository.findByPriceBetween(minPrice, maxPrice);
+    }
 }

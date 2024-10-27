@@ -3,9 +3,7 @@ package com.webpa.webpa.web;
 import com.webpa.webpa.ProductCard;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 public interface ProductCardService {
@@ -15,4 +13,5 @@ public interface ProductCardService {
     void deleteById(Long id);
     boolean existsById(Long id);
     List<ProductCard> findByNameContainingAndPriceBetween(String name, double minPrice, double maxPrice);
+    List<ProductCard> findByPriceRangeAndMarketplace(double minPrice, double maxPrice, String marketplace);
 }
