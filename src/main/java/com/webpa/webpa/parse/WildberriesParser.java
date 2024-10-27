@@ -14,9 +14,6 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -26,7 +23,6 @@ import com.google.gson.JsonObject;
 import com.webpa.webpa.*;
 import java.util.*;
 import org.json.CDL;
-
 
 @Component
 public class WildberriesParser implements MarketplaceParser {
@@ -64,14 +60,32 @@ public class WildberriesParser implements MarketplaceParser {
                 JsonArray productsArray = dataObject.getAsJsonArray("products");
 
                 // Convert each product to ProductCard
+                // while (numOfCounts >= 0) {
+                // sizes/price/basic
                 for (JsonElement productElement : productsArray) {
                     JsonObject product = productElement.getAsJsonObject();
                     ProductCard productCard = new ProductCard();
-
+                    
+                    // double price = Double.parseDouble(product.get("salePiceU").getAsString());
+                    double basicPrice = 0;
+                    try{
+                        if (product.has("sizes")) {
+                            JsonObject sizes = product.get("sizes").getAsJsonObject();
+                            if (sizes.has("price")) {
+                                JsonObject price = sizes.get("price").getAsJsonObject();
+                                if (price.has("basic")) {
+                                    basicPrice = price.get("basic").getAsDouble();
+                                    System.out.println("Basic price: " + basicPrice);
+                                }
+                            }
+                        }
+                    }catch (Exception e){
+                        System.out.println("Ошибка при получении цены");
+                    }
+                    
                     // Set basic fields
                     productCard.setName(getStringValue(product, "name"));
-                    System.out.println((getDoubleValue(dataObject, "salePriceU")));
-                    productCard.setPrice(getDoubleValue(product, "salePriceU") / 100); // Convert kopeks to rubles
+                    productCard.setPrice(basicPrice/100); // Convert kopeks to rubles
                     productCard.setImage(getStringValue(product, "pics"));
                     productCard.setUrl(
                             "https://www.wildberries.ru/catalog/" + getStringValue(product, "id") + "/detail.aspx");
@@ -96,8 +110,6 @@ public class WildberriesParser implements MarketplaceParser {
                         }
                     }
                     productCard.setMainCharacteristics(mainCharacteristics);
-                    
-            
 
                     // Set additional information
                     Map<String, Object> additionalInfo = new HashMap<>();
@@ -109,6 +121,7 @@ public class WildberriesParser implements MarketplaceParser {
                     // Add to list
                     productCards.add(productCard);
                 }
+
             }
 
         } catch (Exception e) {
@@ -131,7 +144,6 @@ public class WildberriesParser implements MarketplaceParser {
     protected double getDoubleValue(JsonObject obj, String key) {
         return obj.has(key) ? obj.get(key).getAsDouble() : 0.0;
     }
-
 
     public static String URLEndoder(String word) {// Слово для преобразования
         try {

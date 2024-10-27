@@ -22,13 +22,11 @@
     </properties>
 
     <dependencies>
-
+        <!-- Удалите эту зависимость, если она есть -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
-            <version>3.3.5</version>
         </dependency>
-
 
         <dependency>
             <groupId>org.apache.poi</groupId>
@@ -50,7 +48,7 @@
             <artifactId>json</artifactId>
             <version>20240303</version>
         </dependency>
-        
+
 
         <dependency>
             <groupId>org.apache.portals.jetspeed-2</groupId>
