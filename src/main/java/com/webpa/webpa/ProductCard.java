@@ -24,7 +24,6 @@ public class ProductCard implements Serializable {
     @Column(nullable = false)
     private String name;
 
-    @NotBlank(message = "Product name is required")
     @Positive
     private Integer price;
 

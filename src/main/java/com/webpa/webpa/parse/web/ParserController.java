@@ -13,11 +13,14 @@ import com.webpa.webpa.ProductCard;
 import com.webpa.webpa.parse.WildberriesParser;
 import com.webpa.webpa.web.ProductCardService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/api/parser")
 @Slf4j
+@Tag(name = "Parser API", description = "Parse product cards in markets")
 public class ParserController {
 
     private final WildberriesParser wildberriesParser;
@@ -28,7 +31,7 @@ public class ParserController {
         this.wildberriesParser = wildberriesParser;
         this.productCardService = productCardService;
     }
-
+    @Operation(summary = "Получить 100 товаров из маркетплейсов по запросу", description = "Парсит и отправляет данные о товарах")
     @PostMapping("/search")
     public ResponseEntity<?> searchAndSaveProducts(@RequestParam String query) {
         try {

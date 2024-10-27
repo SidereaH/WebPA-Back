@@ -1,5 +1,6 @@
 package com.webpa.webpa.parse;
 
+import org.apache.commons.io.FileUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -7,6 +8,7 @@ import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
@@ -23,6 +25,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.webpa.webpa.*;
 import java.util.*;
+import org.json.CDL;
 
 @Component
 public class WildberriesParser implements MarketplaceParser {
@@ -33,7 +36,7 @@ public class WildberriesParser implements MarketplaceParser {
 
         try {
             // Encode search query
-            String word =URLEndoder(searchQuery);
+            String word = URLEndoder(searchQuery);
             String url = String.format(
                     "https://search.wb.ru/exactmatch/ru/common/v7/search?ab_testing=false&appType=1&curr=rub&dest=-1257786&query=%s&resultset=catalog&sort=popular&spp=30&suppressSpellcheck=false",
                     word);
@@ -91,6 +94,8 @@ public class WildberriesParser implements MarketplaceParser {
                         }
                     }
                     productCard.setMainCharacteristics(mainCharacteristics);
+                    
+            
 
                     // Set additional information
                     Map<String, Object> additionalInfo = new HashMap<>();
@@ -145,4 +150,5 @@ public class WildberriesParser implements MarketplaceParser {
         }
         return null;
     }
+
 }
