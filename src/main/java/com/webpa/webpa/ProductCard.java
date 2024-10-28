@@ -38,6 +38,7 @@ public class ProductCard implements Serializable {
     @Convert(converter = JsonConverter.class)
     private Map<String, Object> mainCharacteristics = new HashMap<>();
 
+
     @Column(name = "additional_information", columnDefinition = "TEXT")
     @Convert(converter = JsonConverter.class)
     private Map<String, Object> additionalInformation = new HashMap<>();

@@ -8,7 +8,7 @@ public class WebpaApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(WebpaApplication.class, args);
-	
+
 	}
 
 }
