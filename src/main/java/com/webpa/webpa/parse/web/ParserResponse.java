@@ -15,4 +15,5 @@ public class ParserResponse {
         this.message = message;
         this.products = products;
     }
+
 }

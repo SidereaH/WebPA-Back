@@ -2,12 +2,10 @@ package com.webpa.webpa.parse.web;
 
 import java.util.List;
 
+import com.webpa.webpa.ProductAnalyzer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.webpa.webpa.ProductCard;
 import com.webpa.webpa.parse.WildberriesParser;
@@ -36,10 +34,10 @@ public class ParserController {
     public ResponseEntity<?> searchAndSaveProducts(@RequestParam String query) {
         try {
             log.info("Starting search for query: {}", query);
-            
+
             // Parse products from Wildberries
             List<ProductCard> products = wildberriesParser.parseProducts(query);
-            
+
             // Save all products to database
             products.forEach(product -> {
                 try {
@@ -48,9 +46,9 @@ public class ParserController {
                     log.error("Error saving product: {}", e.getMessage());
                 }
             });
-            
+
             log.info("Successfully parsed and saved {} products", products.size());
-            
+
             return ResponseEntity.ok()
                 .body(new ParserResponse(
                     true,
@@ -66,5 +64,27 @@ public class ParserController {
                     null
                 ));
         }
+    }
+    @Autowired
+    private WildberriesParser parser;
+
+    @Autowired
+    private ProductAnalyzer analyzer;
+
+    @GetMapping("/analyze")
+    public ParserResponse analyzeProducts(@RequestParam String query) {
+        // Парсинг товаров
+        List<ProductCard> productCards = parser.parseProducts(query);
+
+        // Предварительная обработка данных
+        productCards = analyzer.preprocessData(productCards, query);
+
+        // Вывод анализа
+        analyzer.printAnalysis(productCards);
+
+        // Возвращаем результат
+        return new ParserResponse(true, "ggez", productCards);
+
+
     }
 }
