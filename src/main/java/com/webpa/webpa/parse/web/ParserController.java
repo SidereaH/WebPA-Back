@@ -43,7 +43,9 @@ public class ParserController {
             // Save all products to database
             products.forEach(product -> {
                 try {
-                    productCardService.save(product);
+                    if (!productCardService.existsByMarketplaceId(product.getMarketplaceId())) {
+                        productCardService.save(product);
+                    }
                 } catch (Exception e) {
                     log.error("Error saving product: {}", e.getMessage());
                 }

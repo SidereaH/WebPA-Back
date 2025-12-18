@@ -27,4 +27,6 @@ public interface ProductCardRepository extends JpaRepository<ProductCard, Long> 
             @Param("marketplace") String marketplace);
             
     List<ProductCard> findByPriceBetween(double minPrice, double maxPrice);
+
+    Boolean existsByMarketplaceId(String marketplaceId);
 }

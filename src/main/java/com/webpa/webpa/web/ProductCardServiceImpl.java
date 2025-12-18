@@ -26,6 +26,9 @@ public class ProductCardServiceImpl implements ProductCardService {
     }
 
 
+    public Boolean existsByMarketplaceId(String id) {
+        return productCardRepository.existsByMarketplaceId(id);
+    }
 
     @Override
     public Optional<ProductCard> findById(Long id) {

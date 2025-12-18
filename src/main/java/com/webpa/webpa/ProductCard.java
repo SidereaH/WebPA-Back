@@ -21,8 +21,9 @@ public class ProductCard implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String marketplaceId;
+
     @NotBlank(message = "Product name is required")
-    @Size(min = 2, max = 50)
     @Column(nullable = false)
     private String name;
 
