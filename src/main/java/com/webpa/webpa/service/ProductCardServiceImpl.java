@@ -1,5 +1,6 @@
-package com.webpa.webpa.web;
+package com.webpa.webpa.service;
 
+import com.webpa.webpa.repository.ProductCardRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -8,9 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
-import com.webpa.webpa.ProductCard;
-import com.webpa.webpa.service.*;
-import com.webpa.webpa.*;
+import com.webpa.webpa.models.ProductCard;
+
 @Service
 @Transactional
 @Slf4j
@@ -51,13 +51,16 @@ public class ProductCardServiceImpl implements ProductCardService {
     }
 
     @Override
+    public Long findIdByMarketplaceIdAndName(String marketplaceId, String name) {
+        return productCardRepository.findIdByMarketplaceIdAndName(marketplaceId, name);
+    }
+
     public List<ProductCard> findByNameContainingAndPriceBetween(
             String name, double minPrice, double maxPrice) {
         return productCardRepository
                 .findByNameContainingIgnoreCaseAndPriceBetween(name, minPrice, maxPrice);
     }
 
-    @Override
     public List<ProductCard> findByPriceRangeAndMarketplace(
             double minPrice, double maxPrice, String marketplace) {
         if (marketplace != null && !marketplace.isEmpty()) {

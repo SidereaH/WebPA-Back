@@ -1,4 +1,4 @@
-package com.webpa.webpa.parse;
+package com.webpa.webpa.service.parse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

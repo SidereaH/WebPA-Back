@@ -1,4 +1,4 @@
-package com.webpa.webpa.web;
+package com.webpa.webpa.repository;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
-import com.webpa.webpa.ProductCard;
+import com.webpa.webpa.models.ProductCard;
 
 @Repository
 public interface ProductCardRepository extends JpaRepository<ProductCard, Long> {
@@ -29,4 +29,5 @@ public interface ProductCardRepository extends JpaRepository<ProductCard, Long> 
     List<ProductCard> findByPriceBetween(double minPrice, double maxPrice);
 
     Boolean existsByMarketplaceId(String marketplaceId);
+    Long findIdByMarketplaceIdAndName(String marketplaceId, String name);
 }

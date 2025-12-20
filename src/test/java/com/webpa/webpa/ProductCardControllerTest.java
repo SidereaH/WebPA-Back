@@ -1,23 +1,20 @@
 package com.webpa.webpa;
 
 
-import com.webpa.webpa.ProductCard;
+import com.webpa.webpa.controllers.ProductCardController;
+import com.webpa.webpa.models.ProductCard;
 import com.webpa.webpa.service.ExcelExportService;
-import com.webpa.webpa.web.ProductCardService;
+import com.webpa.webpa.service.ProductCardService;
 
-import org.apache.xmlbeans.impl.xb.xsdschema.ListDocument.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import com.webpa.webpa.web.*;
-import java.util.Collections;
+
 import java.util.Optional;
-import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;

@@ -1,6 +1,6 @@
-package com.webpa.webpa.parse.web;
+package com.webpa.webpa.dto;
 
-import com.webpa.webpa.ProductCard;
+import com.webpa.webpa.models.ProductCard;
 import lombok.Data;
 import java.util.List;
 

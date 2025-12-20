@@ -1,9 +1,8 @@
-package com.webpa.webpa;
+package com.webpa.webpa.models;
 
+import com.webpa.webpa.JsonConverter;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 import java.io.Serializable;
