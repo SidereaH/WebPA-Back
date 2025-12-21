@@ -1,15 +1,9 @@
 package com.webpa.webpa.parse;
 
-import org.apache.commons.io.FileUtils;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
+import com.webpa.webpa.models.ProductCard;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
@@ -20,9 +14,8 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.webpa.webpa.*;
+
 import java.util.*;
-import org.json.CDL;
 
 @Component
 public class WildberriesParser implements MarketplaceParser {

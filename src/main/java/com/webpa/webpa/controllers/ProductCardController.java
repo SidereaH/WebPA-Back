@@ -1,12 +1,10 @@
-package com.webpa.webpa.web;
+package com.webpa.webpa.controllers;
 
-import com.webpa.webpa.ProductCard;
+import com.webpa.webpa.models.ProductCard;
 import com.webpa.webpa.service.ExcelExportService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -17,7 +15,6 @@ import jakarta.validation.Valid;
 import java.util.*;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
