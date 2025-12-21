@@ -29,9 +29,15 @@ COPY --from=builder /app/target/*.jar app.jar
 # Внешний порт для приложения
 EXPOSE 8080
 
+# Порт для H2 консоли (если используется)
+EXPOSE 8082
+
+# Настройки для Spring Boot DevTools
+ENV SPRING_DEVTOOLS_REMOTE_SECRET=mysecret
+ENV SPRING_DEVTOOLS_REMOTE_DEBUG=false
+
 # Настройки Java для контейнера
 ENV JAVA_OPTS="-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0"
-ENV SPRING_PROFILES_ACTIVE=default
 
 # Команда запуска
 ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]

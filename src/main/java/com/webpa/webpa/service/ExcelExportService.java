@@ -1,6 +1,6 @@
 package com.webpa.webpa.service;
 
-import com.webpa.webpa.models.ProductCard;
+import com.webpa.webpa.ProductCard;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 // ExcelExportService.java
 @Service
