@@ -17,13 +17,6 @@ public class UserController {
         this.userService = userService;
     }
 
-    // Создание пользователя
-    @PostMapping
-    public String createUser(@RequestBody User user) {
-        userService.createUser(user);
-
-        return "redirect:/login?registered";
-    }
 
     @PutMapping("/{id}")
     public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User updatedUser) {
@@ -47,11 +40,6 @@ public class UserController {
     public ResponseEntity<User> getUserById(@PathVariable Long id) {
         User user = userService.getUserById(id);
         return ResponseEntity.ok(user);
-    }
-
-    @GetMapping("/register")
-    public String showRegistrationForm() {
-        return "register";
     }
 
 }
