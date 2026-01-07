@@ -6,16 +6,9 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.webpa.webpa.ProductCard;
+import com.webpa.webpa.models.ProductCard;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,7 +34,7 @@ public class OzonParser implements MarketplaceParser {
 
                 ProductCard product = new ProductCard();
                 product.setName(title);
-                product.setPrice(Integer.parseInt(price));
+                //product.setPrice(getDoubleValue(price));
                 product.setMarketplace("OZON");
                 product.setUrl("https://www.ozon.ru" + productUrl);
 
@@ -52,5 +45,7 @@ public class OzonParser implements MarketplaceParser {
         }
         return products;
     }
+
+    
 
 }

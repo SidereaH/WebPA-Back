@@ -1,34 +1,30 @@
 package com.webpa.webpa.parse;
 
-import org.apache.commons.io.FileUtils;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
+import com.webpa.webpa.models.ProductCard;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.webpa.webpa.*;
+
 import java.util.*;
-import org.json.CDL;
 
 @Component
 public class WildberriesParser implements MarketplaceParser {
+    private static final String WB_COOKIES =
+            "_cp=1; " +
+                    "_wbauid=9868545131761658936; " +
+                    "routeb=1762263394.809.74.968545|d4ae5f6f13c2fcce539dd766ca4b41fc; " +
+                    "wbx-validation-key=027d2fbf-5634-4552-89fe-956501403d00; " +
+                    "x_wbaas_token=1.1000.ed80ee820a4348b18a657304f3460b83.MHwxODUuMjIzLjE2OC4yMDJ8TW96aWxsYS81LjAgKFgxMTsgTGludXggeDg2XzY0OyBydjoxMzkuMCkgR2Vja28vMjAxMDAxMDEgRmlyZWZveC8xMzkuMHwxNzY2NzUzNjE3fHJldXNhYmxlfDJ8ZXlKb1lYTm9Jam9pSW4wPXwwfDN8MTc2NjE0ODgxN3wx.MEYCIQCAIUdeyy509pGfGIRGy9XLuKw1WAb1OkNbcA96A7dguQIhAOv+fbvYCTG+qu1leaR/MRxov/4Lvus7y1BRXu4Beq5o";
 
     @Override
     public List<ProductCard> parseProducts(String searchQuery) {
@@ -38,13 +34,18 @@ public class WildberriesParser implements MarketplaceParser {
             // Encode search query
             String word = URLEndoder(searchQuery);
             String url = String.format(
-                    "https://search.wb.ru/exactmatch/ru/common/v7/search?ab_testing=false&appType=1&curr=rub&dest=-1257786&query=%s&resultset=catalog&sort=popular&spp=30&suppressSpellcheck=false",
+                    "https://www.wildberries.ru/__internal/search/exactmatch/ru/common/v18/search?ab_testing=false&ab_testing=false&appType=1&curr=rub&dest=-2228370&hide_dtype=9;11&hide_vflags=4294967296&inheritFilters=false&lang=ru&page=1&query=%s&resultset=catalog&sort=popular&spp=30&suppressSpellcheck=false&uclusters=2",
+                   // "https://search.wb.ru/exactmatch/ru/common/v7/search?ab_testing=false&appType=1&curr=rub&dest=-1257786&query=%s&resultset=catalog&sort=popular&spp=30&suppressSpellcheck=false",
                     word);
 
-            // Make HTTP request
             HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
             connection.setRequestMethod("GET");
+
             connection.setRequestProperty("Accept", "application/json");
+            connection.setRequestProperty("User-Agent",
+                    "Mozilla/5.0 (X11; Linux x86_64; rv:139.0) Gecko/20100101 Firefox/139.0");
+            connection.setRequestProperty("Cookie", WB_COOKIES);
+
 
             // Read response
             try (InputStreamReader isr = new InputStreamReader(connection.getInputStream());
@@ -59,17 +60,48 @@ public class WildberriesParser implements MarketplaceParser {
                 // Parse JSON
                 Gson gson = new GsonBuilder().setPrettyPrinting().create();
                 JsonObject jsonObject = gson.fromJson(response.toString(), JsonObject.class);
-                JsonObject dataObject = jsonObject.getAsJsonObject("data");
-                JsonArray productsArray = dataObject.getAsJsonArray("products");
+//                JsonObject dataObject = jsonObject.getAsJsonObject("data");
+                JsonArray productsArray = jsonObject.getAsJsonArray("products");
 
                 // Convert each product to ProductCard
+                // while (numOfCounts >= 0) {
+                // sizes/price/basic
                 for (JsonElement productElement : productsArray) {
                     JsonObject product = productElement.getAsJsonObject();
                     ProductCard productCard = new ProductCard();
+                    
+                    // double price = Double.parseDouble(product.get("salePiceU").getAsString());
+                    double basicPrice = 0;
 
+                    try {
+                        if (product.has("sizes") && product.get("sizes").isJsonArray()) {
+                            JsonArray sizes = product.getAsJsonArray("sizes");
+
+                            if (!sizes.isEmpty()) {
+                                JsonObject size0 = sizes.get(0).getAsJsonObject();
+
+                                if (size0.has("price")) {
+                                    JsonObject price = size0.getAsJsonObject("price");
+
+                                    // Цена продажи
+                                    if (price.has("product")) {
+                                        basicPrice = price.get("product").getAsDouble();
+                                    }
+                                    // fallback — базовая
+                                    else if (price.has("basic")) {
+                                        basicPrice = price.get("basic").getAsDouble();
+                                    }
+                                }
+                            }
+                        }
+                    } catch (Exception e) {
+                        System.out.println("Ошибка при получении цены: " + e.getMessage());
+                    }
+                    
                     // Set basic fields
+                    productCard.setMarketplaceId(product.get("id").getAsString());
                     productCard.setName(getStringValue(product, "name"));
-                    productCard.setPrice(getIntValue(product, "salePriceU") / 100); // Convert kopeks to rubles
+                    productCard.setPrice(basicPrice/100); // Convert kopeks to rubles
                     productCard.setImage(getStringValue(product, "pics"));
                     productCard.setUrl(
                             "https://www.wildberries.ru/catalog/" + getStringValue(product, "id") + "/detail.aspx");
@@ -94,8 +126,6 @@ public class WildberriesParser implements MarketplaceParser {
                         }
                     }
                     productCard.setMainCharacteristics(mainCharacteristics);
-                    
-            
 
                     // Set additional information
                     Map<String, Object> additionalInfo = new HashMap<>();
@@ -107,6 +137,7 @@ public class WildberriesParser implements MarketplaceParser {
                     // Add to list
                     productCards.add(productCard);
                 }
+
             }
 
         } catch (Exception e) {
@@ -118,18 +149,17 @@ public class WildberriesParser implements MarketplaceParser {
     }
 
     // Helper methods to safely get values from JsonObject
-    private String getStringValue(JsonObject obj, String key) {
+    protected String getStringValue(JsonObject obj, String key) {
         return obj.has(key) ? obj.get(key).getAsString() : "";
     }
 
-    private int getIntValue(JsonObject obj, String key) {
+    protected int getIntValue(JsonObject obj, String key) {
         return obj.has(key) ? obj.get(key).getAsInt() : 0;
     }
 
-    private double getDoubleValue(JsonObject obj, String key) {
+    protected double getDoubleValue(JsonObject obj, String key) {
         return obj.has(key) ? obj.get(key).getAsDouble() : 0.0;
     }
-
 
     public static String URLEndoder(String word) {// Слово для преобразования
         try {

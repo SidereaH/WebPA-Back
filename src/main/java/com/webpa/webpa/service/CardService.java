@@ -1,6 +1,6 @@
-package com.webpa.webpa.web;
+package com.webpa.webpa.service;
 
-import com.webpa.webpa.ProductCard;
+import com.webpa.webpa.models.ProductCard;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

@@ -1,5 +1,6 @@
 package com.webpa.webpa.parse;
 
+import com.webpa.webpa.models.ProductCard;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -9,7 +10,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import com.webpa.webpa.*;
+
 @Component
 public class YandexMarketParser implements MarketplaceParser {
 
@@ -29,7 +30,7 @@ public class YandexMarketParser implements MarketplaceParser {
 
                 ProductCard product = new ProductCard();
                 product.setName(title);
-                product.setPrice(Integer.parseInt(price));
+                //product.setPrice(g(price));
                 product.setMarketplace("YandexMarket");
                 product.setUrl("https://market.yandex.ru" + productUrl);
 

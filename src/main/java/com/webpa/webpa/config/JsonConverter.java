@@ -1,4 +1,4 @@
-package com.webpa.webpa;
+package com.webpa.webpa.config;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;

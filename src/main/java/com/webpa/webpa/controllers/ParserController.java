@@ -1,7 +1,8 @@
-package com.webpa.webpa.parse.web;
+package com.webpa.webpa.controllers;
 
 import java.util.List;
 
+import com.webpa.webpa.dto.ParserResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -9,9 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.webpa.webpa.ProductCard;
+import com.webpa.webpa.models.ProductCard;
 import com.webpa.webpa.parse.WildberriesParser;
-import com.webpa.webpa.web.ProductCardService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -43,7 +43,12 @@ public class ParserController {
             // Save all products to database
             products.forEach(product -> {
                 try {
-                    productCardService.save(product);
+                    if (!productCardService.existsByMarketplaceId(product.getMarketplaceId())) {
+                        productCardService.save(product);
+                    }
+                    else{
+                         product.setId(productCardService.findIdByMarketplaceIdAndName(product.getMarketplaceId(), product.getName()));
+                    }
                 } catch (Exception e) {
                     log.error("Error saving product: {}", e.getMessage());
                 }
